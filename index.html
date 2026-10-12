@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ענן פלוס · אזור לקוחות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* Demo portal of a FICTIONAL supplier for Contreal film-01. No real company, no real data. */
+  :root { --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --bg:#f6f7fb; --blue:#2563eb; --blue2:#1d4ed8; --green:#16a34a; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Heebo, system-ui, sans-serif; color:var(--ink); background:var(--bg); }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:700; font-size:22px; }
+  .logo { width:36px; height:36px; border-radius:10px; background:var(--blue); display:grid; place-items:center; }
+  .logo svg { width:22px; }
+  button, .btn { font:inherit; border:0; border-radius:10px; padding:12px 18px; background:var(--blue); color:#fff; font-weight:500; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+  button:hover, .btn:hover { background:var(--blue2); }
+  /* login */
+  #login { min-height:100vh; display:grid; place-items:center; padding:16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:36px; width:100%; max-width:420px; box-shadow:0 10px 30px rgba(17,24,39,.06); }
+  .card h1 { font-size:24px; margin:24px 0 6px; } .card p { color:var(--muted); margin:0 0 24px; }
+  label { display:block; font-size:14px; font-weight:500; margin:14px 0 6px; }
+  input { width:100%; font:inherit; padding:12px 14px; border:1px solid var(--line); border-radius:10px; direction:ltr; text-align:right; }
+  input:focus { outline:2px solid #bfdbfe; border-color:var(--blue); }
+  .card button { width:100%; justify-content:center; margin-top:22px; }
+  .err { color:#dc2626; font-size:14px; min-height:20px; margin-top:10px; }
+  /* app */
+  #app { display:none; min-height:100vh; }
+  header { background:#fff; border-bottom:1px solid var(--line); padding:14px 28px; display:flex; justify-content:space-between; align-items:center; }
+  .who { color:var(--muted); font-size:15px; }
+  .wrap { display:flex; }
+  nav { width:230px; padding:22px 14px; }
+  nav a { display:block; padding:11px 14px; border-radius:10px; color:var(--ink); text-decoration:none; margin-bottom:4px; cursor:pointer; }
+  nav a.on { background:#e0e7ff; color:var(--blue2); font-weight:500; }
+  main { flex:1; padding:28px 32px; }
+  h2 { margin:0 0 6px; font-size:26px; } .sub { color:var(--muted); margin:0 0 24px; }
+  .panel { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  table { width:100%; border-collapse:collapse; }
+  th, td { text-align:right; padding:16px 20px; border-bottom:1px solid var(--line); }
+  th { font-size:14px; color:var(--muted); font-weight:500; background:#fafafa; }
+  tr:last-child td { border-bottom:0; }
+  .paid { color:var(--green); background:#dcfce7; padding:4px 10px; border-radius:999px; font-size:13px; font-weight:500; }
+  .num { direction:ltr; display:inline-block; }
+  .tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .tile { background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .tile b { display:block; font-size:24px; margin-top:6px; }
+  @media (max-width:760px) { nav { display:none; } main { padding:20px 16px; } th:nth-child(4), td:nth-child(4) { display:none; } .tiles { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<section id="login">
+  <form class="card" onsubmit="return signIn(event)">
+    <div class="brand"><span class="logo"><svg viewBox="0 0 24 16"><path fill="#fff" d="M6 16a6 6 0 0 1-.7-12A7 7 0 0 1 18.6 5 5.5 5.5 0 0 1 18.5 16z"/></svg></span>ענן פלוס</div>
+    <h1>כניסה לאזור הלקוחות</h1>
+    <p>ניהול שירותים, חשבוניות ותמיכה</p>
+    <label for="email">אימייל</label>
+    <input id="email" type="email" autocomplete="username" required>
+    <label for="pass">סיסמה</label>
+    <input id="pass" type="password" autocomplete="current-password" required>
+    <button type="submit" id="signin">כניסה</button>
+    <div class="err" id="err" role="alert"></div>
+  </form>
+</section>
+
+<section id="app">
+  <header>
+    <div class="brand"><span class="logo"><svg viewBox="0 0 24 16"><path fill="#fff" d="M6 16a6 6 0 0 1-.7-12A7 7 0 0 1 18.6 5 5.5 5.5 0 0 1 18.5 16z"/></svg></span>ענן פלוס</div>
+    <div class="who">סטודיו דמו בע"מ · <a href="#" onclick="signOut()">יציאה</a></div>
+  </header>
+  <div class="wrap">
+    <nav>
+      <a data-v="home" onclick="show('home')">סקירה</a>
+      <a data-v="services" onclick="show('services')">השירותים שלי</a>
+      <a data-v="invoices" onclick="show('invoices')" id="nav-invoices">חשבוניות</a>
+      <a data-v="support" onclick="show('support')">תמיכה</a>
+    </nav>
+    <main>
+      <div id="v-home">
+        <h2>שלום, סטודיו דמו</h2><p class="sub">החשבון שלכם פעיל</p>
+        <div class="tiles">
+          <div class="tile">שירותים פעילים<b>3</b></div>
+          <div class="tile">חיוב הבא<b>01.11.2026</b></div>
+          <div class="tile">יתרה לתשלום<b>₪0.00</b></div>
+        </div>
+      </div>
+      <div id="v-services"><h2>השירותים שלי</h2><p class="sub">שרת ענן עסקי · גיבוי יומי · דומיין ו-SSL</p></div>
+      <div id="v-support"><h2>תמיכה</h2><p class="sub">אין פניות פתוחות</p></div>
+      <div id="v-invoices">
+        <h2>חשבוניות</h2><p class="sub">כל החשבוניות של החשבון, להורדה כ-PDF</p>
+        <div class="panel"><table>
+          <thead><tr><th>תקופה</th><th>מספר</th><th>סכום</th><th>סטטוס</th><th></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table></div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<script>
+  // Demo credentials (fictional account, see README.md)
+  const USER = "demo@studio-demo.co.il", PASS = "demo-2026";
+  const INV = [
+    ["אוקטובר 2026", "40821", "349.00"], ["ספטמבר 2026", "40377", "349.00"],
+    ["אוגוסט 2026", "39912", "349.00"], ["יולי 2026", "39460", "289.00"],
+  ];
+  document.getElementById("rows").innerHTML = INV.map(([m, n, a]) =>
+    `<tr><td>${m}</td><td><span class="num">#${n}</span></td><td>₪${a}</td><td><span class="paid">שולם</span></td>
+     <td><a class="btn" href="files/anan-plus-invoice-${n}.pdf" download aria-label="הורדת PDF ${m}">הורדת PDF</a></td></tr>`).join("");
+  function signIn(e) {
+    e.preventDefault();
+    const ok = document.getElementById("email").value.trim().toLowerCase() === USER && document.getElementById("pass").value === PASS;
+    if (!ok) { document.getElementById("err").textContent = "אימייל או סיסמה שגויים"; return false; }
+    try { sessionStorage.setItem("anan", "1"); } catch (_) {}
+    enter(); return false;
+  }
+  function enter() { login.style.display = "none"; app.style.display = "block"; show(location.hash.slice(1) || "home"); }
+  function signOut() { try { sessionStorage.removeItem("anan"); } catch (_) {} location.hash = ""; location.reload(); }
+  function show(v) {
+    for (const k of ["home", "services", "invoices", "support"]) document.getElementById("v-" + k).style.display = k === v ? "block" : "none";
+    document.querySelectorAll("nav a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
+    history.replaceState(null, "", "#" + v);
+  }
+  let signed = false; try { signed = sessionStorage.getItem("anan") === "1"; } catch (_) {}
+  if (signed) enter();
+</script>
+</body>
+</html>
